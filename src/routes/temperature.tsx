@@ -1,8 +1,16 @@
-import { ChartContainer, type ChartConfig } from "@/components/ui/chart"
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { Area, AreaChart, Bar, BarChart, Brush, CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from "recharts"
+import { SortingState } from "@tanstack/react-table"
+import { useMemo, useState } from "react"
+import { TemperatureChart } from "../components/charts/temperature-chart"
+import { Header } from "../components/Header"
+import { MainNav } from "../components/MainNav"
+import { TemperatureTable } from "../components/tables/temperature-table"
+import { Button } from "../components/ui/button"
+import { ButtonGroup } from "../components/ui/button-group"
 import { magdeburgDataQuery } from "../lib/magdeburgData.query"
+import { cn } from '../lib/utils'
+import { WeatherDataRow } from "../lib/weather-data-types"
 
 export const Route = createFileRoute("/temperature")({
   component: RouteComponent,
@@ -10,56 +18,100 @@ export const Route = createFileRoute("/temperature")({
 
 function RouteComponent() {
   const { data } = useQuery(magdeburgDataQuery)
-  const chartData = data?.map(({ MESS_DATUM, TNK, TXK }: { MESS_DATUM: number | string; TNK: number; TXK: number }) => {
-    const s = String(MESS_DATUM).padStart(8, "0") // ensure YYYYMMDD length
-    const year = s.slice(0, 4)
-    const month = s.slice(4, 6)
-    const day = s.slice(6, 8)
-    const date = `${day}.${month}.${year}`
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [timeRange, setTimeRange] = useState<"1M" | "6M" | "1J" | "Max">("Max")
 
-    return {
-      date,
-      low: TNK,
-      high: TXK,
-      lowhigh: [TNK, TXK],
-    }
-  })
+  const temperatureData = useMemo(
+    () => {
+      if(!data) return []
+      const convertedData = data.map(({ MESS_DATUM, TNK, TXK }: Pick<WeatherDataRow, "MESS_DATUM" | "TNK" | "TXK">) => {
+        const year = MESS_DATUM.toString().slice(0, 4)
+        const month = MESS_DATUM.toString().slice(4, 6)
+        const day = MESS_DATUM.toString().slice(6, 8)
+        const date = new Date(Number(year), Number(month) - 1, Number(day))
+        const lowhigh: [number, number] | undefined = TNK && TXK ? [TNK, TXK] : undefined
 
-  const chartConfig = {
-    low: {
-      label: "Tiefstwerte",
-      color: "#2563eb",
+        return {
+          date,
+          low: TNK,
+          high: TXK,
+          lowhigh,
+        }
+      }).sort((a, b) => b.date.getTime() - a.date.getTime())
+
+      const lastDate = convertedData?.[0]?.date
+      let firstDate = convertedData?.[convertedData.length - 1]?.date
+      if(timeRange === "1M") {
+        firstDate = new Date(lastDate!.getFullYear(), lastDate!.getMonth() -1, lastDate!.getDate())
+      } else if(timeRange === "6M") {
+        firstDate = new Date(lastDate!.getFullYear(), lastDate!.getMonth() -6, lastDate!.getDate())
+      } else if(timeRange === "1J") {
+        firstDate = new Date(lastDate!.getFullYear() -1, lastDate!.getMonth(), lastDate!.getDate())
+      }
+
+      const filtered = convertedData.filter(d => d.date >= firstDate!)
+      const max = Math.max(...(filtered.length ? filtered.map((d) => d.high ?? Number.NEGATIVE_INFINITY) : [Number.NEGATIVE_INFINITY]))
+      const min = Math.min(...(filtered.length ? filtered.map((d) => d.low ?? Number.POSITIVE_INFINITY) : [Number.POSITIVE_INFINITY]))
+
+      return filtered.map((i) => {
+        if (i.high === max) {
+          return { ...i, max: i.high }
+        }
+        if (i.low === min) {
+          return { ...i, min: i.low }
+        }
+        return i
+      })
     },
-    high: {
-      label: "Höchstwerte",
-      color: "#60a5fa",
+    [data, timeRange]
+  )
+
+  const from = useMemo(
+    () => {
+      if(temperatureData.length === 0) return null
+      const sortedByDate = [...temperatureData].sort((a, b) => a.date.getTime() - b.date.getTime())
+      return sortedByDate[0].date
     },
-  } satisfies ChartConfig
+    [temperatureData]
+  )
+  const to = useMemo(
+    () => {
+      if(temperatureData.length === 0) return null
+      const sortedByDate = [...temperatureData].sort((a, b) => b.date.getTime() - a.date.getTime())
+      return sortedByDate[0].date
+    },
+    [temperatureData]
+  )
 
   return (
-    <div>
-      <div className="flex justify-between items-center gap-2">
-        <p className="text-temperature">Temperaturen in °C</p>
-        <div className="text-temperature">Zeitraum</div>
+    <div className="flex">
+      <div className="grow py-8 px-20 space-y-6 max-w-4xl mx-auto">
+        <Header />
+
+        <div className="flex justify-between items-end gap-2">
+          <MainNav />
+          <ButtonGroup aria-label="Zeitraum auswählen">
+            <Button variant="ghost" size="sm" className={cn(timeRange === "1M" && "text-temperature bg-muted-foreground pointer-events-none")} onClick={() => setTimeRange("1M")}>
+              1M
+            </Button>
+            <Button variant="ghost" size="sm" className={cn(timeRange === "6M" && "text-temperature bg-muted-foreground pointer-events-none")} onClick={() => setTimeRange("6M")}>
+              6M
+            </Button>
+            <Button variant="ghost" size="sm" className={cn(timeRange === "1J" && "text-temperature bg-muted-foreground pointer-events-none")} onClick={() => setTimeRange("1J")}>
+              1J
+            </Button>
+            <Button variant="ghost" size="sm" className={cn(timeRange === "Max" && "text-temperature bg-muted-foreground pointer-events-none")} onClick={() => setTimeRange("Max")}>
+              Max
+            </Button>
+          </ButtonGroup>
+        </div>
+        <div className='flex justify-between'>
+        <p className="text-xs">Temperaturen in °C</p>
+        <p className="text-xs">Zeitraum von {from?.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" })} bis {to?.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" })}</p>
+        </div>
+        <TemperatureChart data={temperatureData} />
       </div>
-      {/* Main chart: shows only the currently selected window from the overview brush.
-          Instead of changing the chart's pixel width when zooming, we keep the chart
-          width constant and change barSize (and gaps) to create a zoom effect. */}
-      <ChartContainer config={chartConfig} className="w-full">
-        {/* Let Recharts compute bar sizing based on available width and number of points.
-              This produces the desired zoom: fewer points -> wider bars, without us measuring. */}
-        <BarChart accessibilityLayer data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="lowhigh" fill="#AAA5FA" />
-          <Brush dataKey="date" />
-        </BarChart>
-      </ChartContainer>
-      {/* Recharts Brush is used inside the main BarChart (see <Brush />) to control windowRange. */}
-      Temperatur details
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <TemperatureTable data={temperatureData} sorting={sorting} setSorting={setSorting} />
     </div>
   )
 }

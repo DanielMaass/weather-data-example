@@ -1,8 +1,9 @@
 import loadMagdeburgData from "./loadMagdeburgData"
+import type { WeatherData } from "./weather-data-types"
 
 export const magdeburgDataQuery = {
-  queryKey: ["magdeburg"],
-  queryFn: loadMagdeburgData,
+  queryKey: ["magdeburg"] as const,
+  queryFn: loadMagdeburgData as () => Promise<WeatherData>,
   staleTime: Infinity,
   suspense: true,
   useErrorBoundary: true,

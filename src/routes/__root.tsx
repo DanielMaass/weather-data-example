@@ -9,7 +9,6 @@ import appCss from "../styles.css?url"
 
 import type { QueryClient } from "@tanstack/react-query"
 import ErrorBoundary from "../components/ErrorBoundary"
-import { Header } from "../components/Header"
 import { magdeburgDataQuery } from "../lib/magdeburgData.query"
 
 interface MyRouterContext {
@@ -59,12 +58,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ErrorBoundary>
-          <Suspense fallback={<div className="p-8">Lade Daten…</div>}>
-            <div className="p-8 space-y-6 w-full max-w-4xl mx-auto">
-              <Header />
-              {children}
-            </div>
-          </Suspense>
+          <Suspense fallback={<div className="p-8">Lade Daten…</div>}>{children}</Suspense>
         </ErrorBoundary>
         <TanStackDevtools
           config={{
