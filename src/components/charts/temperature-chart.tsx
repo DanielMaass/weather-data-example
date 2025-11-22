@@ -28,11 +28,14 @@ const chartConfig = {
 
 } as const satisfies ChartConfig
 
-export function TemperatureChart({ data = [] }: { data?: TemperatureData  })  {
+const formatDateTick = (date: Date) =>
+  date.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" });
+
+export function TemperatureChart({ data = [] }: { data?: TemperatureData })  {
   const [showMaxTemp, setShowMaxTemp] = useState(false)
   const [showMinTemp, setShowMinTemp] = useState(false)
-  const maxTemp = useMemo(() => data.filter(d => d.max !== undefined)?.[0].max, [data])
-  const minTemp = useMemo(() => data.filter(d => d.min !== undefined)?.[0].min, [data])
+  const maxTemp = useMemo(() => data.find(d => d.max !== undefined)?.max ?? null, [data])
+  const minTemp = useMemo(() => data.find(d => d.min !== undefined)?.min ?? null, [data])
 
   return (
     <>
@@ -55,31 +58,55 @@ export function TemperatureChart({ data = [] }: { data?: TemperatureData  })  {
           stroke='var(--muted-foreground)'
           tickSize={4}
           minTickGap={24}
-          tickFormatter={(date) =>
-            date.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" })
-          }
-          />
+          tickFormatter={formatDateTick}
+        />
         <Tooltip
           cursor={false}
           content={(props) => <CustomToolTip {...props} />}
           />
-        {showMaxTemp && <Scatter dataKey="max" fill={chartConfig.max.color} shape='cross' />}
-        {showMinTemp && <Scatter dataKey="min" fill={chartConfig.min.color} shape="cross"/>}
-        <Line dataKey="low"  stroke={chartConfig.low.color} dot={false} />
-        <Line dataKey="high" stroke={chartConfig.high.color} dot={false} />
+        <Line key="line-low" dataKey="low" stroke={chartConfig.low.color} dot={false} isAnimationActive={false} />
+        <Line key="line-high" dataKey="high" stroke={chartConfig.high.color} dot={false} isAnimationActive={false} />
+        <Scatter
+          key="scatter-max"
+          dataKey="max"
+          fill={chartConfig.max.color}
+          shape='cross'
+          hide={!showMaxTemp}
+          isAnimationActive={false}
+        />
+        <Scatter
+          key="scatter-min"
+          dataKey="min"
+          fill={chartConfig.min.color}
+          shape='cross'
+          hide={!showMinTemp}
+          isAnimationActive={false}
+        />
         {data?.length > 150 && <Brush
           dataKey="date"
           stroke="var(--foreground)"
           fill="#00000000"
-          tickFormatter={(date) =>
-            date.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" })
-          }
+          tickFormatter={formatDateTick}
           className="[&>rect:first-of-type]:hidden [&>.recharts-surface]:overflow-visible [&>.recharts-brush-texts>text]:fill-temperature overflow-visible"
           >
           <ComposedChart>
             <Bar dataKey="lowhigh" fill="oklch(55.4% 0.046 257.417)" />
-            {showMaxTemp && <Scatter dataKey="max" fill={chartConfig.max.color} shape='cross' />}
-            {showMinTemp && <Scatter dataKey="min" fill={chartConfig.min.color} shape="cross"/>}
+            <Scatter
+              key="brush-scatter-max"
+              dataKey="max"
+              fill={chartConfig.max.color}
+              shape='cross'
+              hide={!showMaxTemp}
+              isAnimationActive={false}
+            />
+            <Scatter
+              key="brush-scatter-min"
+              dataKey="min"
+              fill={chartConfig.min.color}
+              shape='cross'
+              hide={!showMinTemp}
+              isAnimationActive={false}
+            />
           </ComposedChart>
         </Brush>}
       </ComposedChart>
