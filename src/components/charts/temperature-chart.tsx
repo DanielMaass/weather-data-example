@@ -1,10 +1,11 @@
 import { ThermometerSnowflake, ThermometerSun } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Bar, Brush, ComposedChart, Line, Scatter, Tooltip, XAxis } from "recharts";
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import type { TooltipProps } from 'recharts/types/component/Tooltip';
-import { TemperatureData } from "../../lib/temperature-data-types";
+import { useTemperature } from '../../context/temperature-context';
 import { cn } from '../../lib/utils';
+import { formatShortDate } from '../../utils/formatShortDate';
 import { Button } from '../ui/button';
 import { ChartConfig, ChartContainer } from "../ui/chart";
 
@@ -28,17 +29,17 @@ const chartConfig = {
 
 } as const satisfies ChartConfig
 
-const formatDateTick = (date: Date) =>
-  date.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" });
-
-export function TemperatureChart({ data = [] }: { data?: TemperatureData })  {
+export function TemperatureChart()  {
+  const { temperatureData: data, from, to, maxTemp, minTemp } = useTemperature()
   const [showMaxTemp, setShowMaxTemp] = useState(false)
   const [showMinTemp, setShowMinTemp] = useState(false)
-  const maxTemp = useMemo(() => data.find(d => d.max !== undefined)?.max ?? null, [data])
-  const minTemp = useMemo(() => data.find(d => d.min !== undefined)?.min ?? null, [data])
 
   return (
     <>
+    <div className='flex justify-between'>
+      <p className="text-xs">Temperaturen in °C</p>
+      <p className="text-xs">Zeitraum von {formatShortDate(from)} bis {formatShortDate(to)}</p>
+    </div>
     <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full ">
       <ComposedChart
         className="[&>.recharts-surface]:overflow-visible"
@@ -58,14 +59,12 @@ export function TemperatureChart({ data = [] }: { data?: TemperatureData })  {
           stroke='var(--muted-foreground)'
           tickSize={4}
           minTickGap={24}
-          tickFormatter={formatDateTick}
+          tickFormatter={formatShortDate}
         />
         <Tooltip
           cursor={false}
           content={(props) => <CustomToolTip {...props} />}
           />
-        <Line key="line-low" dataKey="low" stroke={chartConfig.low.color} dot={false} isAnimationActive={false} />
-        <Line key="line-high" dataKey="high" stroke={chartConfig.high.color} dot={false} isAnimationActive={false} />
         <Scatter
           key="scatter-max"
           dataKey="max"
@@ -82,11 +81,13 @@ export function TemperatureChart({ data = [] }: { data?: TemperatureData })  {
           hide={!showMinTemp}
           isAnimationActive={false}
         />
+        <Line key="line-low" dataKey="low" stroke={chartConfig.low.color} dot={false} isAnimationActive={false} />
+        <Line key="line-high" dataKey="high" stroke={chartConfig.high.color} dot={false} isAnimationActive={false} />
         {data?.length > 150 && <Brush
           dataKey="date"
           stroke="var(--foreground)"
           fill="#00000000"
-          tickFormatter={formatDateTick}
+          tickFormatter={formatShortDate}
           className="[&>rect:first-of-type]:hidden [&>.recharts-surface]:overflow-visible [&>.recharts-brush-texts>text]:fill-temperature overflow-visible"
           >
           <ComposedChart>

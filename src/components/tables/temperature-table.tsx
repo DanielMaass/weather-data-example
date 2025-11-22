@@ -3,26 +3,19 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   Row,
-  SortingState,
   Table,
-  useReactTable,
+  useReactTable
 } from "@tanstack/react-table"
 import { useVirtualizer, VirtualItem, Virtualizer } from "@tanstack/react-virtual"
 import { ArrowDown, ArrowUp } from "lucide-react"
-import React, { RefObject, useEffect, useRef } from "react"
-import { TemperatureData, TemperatureDataRow } from "../../lib/temperature-data-types"
+import { RefObject, useEffect, useRef } from "react"
+import { useTemperature } from '../../context/temperature-context'
+import { TemperatureDataRow } from "../../lib/temperature-data-types"
 import { cn } from "../../lib/utils"
 import { temperatureColumns } from "./temperature-columns"
 
-export const TemperatureTable = ({
-  data = [],
-  sorting,
-  setSorting,
-}: {
-  data?: TemperatureData
-  sorting?: SortingState
-  setSorting?: React.Dispatch<React.SetStateAction<SortingState>>
-}) => {
+export const TemperatureTable = () => {
+  const { temperatureData: data, sorting, setSorting } = useTemperature()
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const table = useReactTable({
     columns: temperatureColumns,
