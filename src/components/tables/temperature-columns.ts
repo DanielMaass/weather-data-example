@@ -12,6 +12,7 @@ export const temperatureColumns = [
         month: "short",
         year: "numeric",
       }),
+      sortingFn: 'datetime',
   }),
   columnHelper.accessor("low", {
     header: "Tiefstwerte (°C)",

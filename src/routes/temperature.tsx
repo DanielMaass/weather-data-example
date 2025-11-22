@@ -37,10 +37,10 @@ function RouteComponent() {
           high: TXK,
           lowhigh,
         }
-      }).sort((a, b) => b.date.getTime() - a.date.getTime())
+      }).sort((a, b) => a.date.getTime() - b.date.getTime())
 
-      const lastDate = convertedData?.[0]?.date
-      let firstDate = convertedData?.[convertedData.length - 1]?.date
+      const lastDate = convertedData?.[convertedData.length - 1]?.date
+      let firstDate = convertedData?.[0]?.date
       if(timeRange === "1M") {
         firstDate = new Date(lastDate!.getFullYear(), lastDate!.getMonth() -1, lastDate!.getDate())
       } else if(timeRange === "6M") {
@@ -53,7 +53,7 @@ function RouteComponent() {
       const max = Math.max(...(filtered.length ? filtered.map((d) => d.high ?? Number.NEGATIVE_INFINITY) : [Number.NEGATIVE_INFINITY]))
       const min = Math.min(...(filtered.length ? filtered.map((d) => d.low ?? Number.POSITIVE_INFINITY) : [Number.POSITIVE_INFINITY]))
 
-      return filtered.map((i) => {
+      let base = filtered.map((i) => {
         if (i.high === max) {
           return { ...i, max: i.high }
         }
@@ -62,8 +62,42 @@ function RouteComponent() {
         }
         return i
       })
+
+      // Apply external sorting based on current sorting state (multi-sort support)
+      if (sorting.length) {
+        const compare = (a: any, b: any) => {
+          for (const { id, desc } of sorting) {
+            const va = a[id]
+            const vb = b[id]
+            if (va == null && vb == null) continue
+            if (va == null) return desc ? 1 : -1
+            if (vb == null) return desc ? -1 : 1
+            // Date comparison
+            if (va instanceof Date && vb instanceof Date) {
+              const diff = va.getTime() - vb.getTime()
+              if (diff !== 0) return desc ? -diff : diff
+              continue
+            }
+            // Numeric comparison
+            if (typeof va === 'number' && typeof vb === 'number') {
+              const diff = va - vb
+              if (diff !== 0) return desc ? -diff : diff
+              continue
+            }
+            // Fallback string comparison
+            const sva = String(va)
+            const svb = String(vb)
+            if (sva === svb) continue
+            return (sva < svb ? -1 : 1) * (desc ? -1 : 1)
+          }
+          return 0
+        }
+        base = [...base].sort(compare)
+      }
+
+      return base
     },
-    [data, timeRange]
+    [data, timeRange, sorting]
   )
 
   const from = useMemo(

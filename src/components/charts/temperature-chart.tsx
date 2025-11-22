@@ -69,7 +69,7 @@ export function TemperatureChart({ data = [] }: { data?: TemperatureData  })  {
         <Line dataKey="high" stroke={chartConfig.high.color} dot={false} />
         {data?.length > 150 && <Brush
           dataKey="date"
-          stroke="var(--foreground)" //"oklch(85.2% 0.199 91.936 / 0.4)"
+          stroke="var(--foreground)"
           fill="#00000000"
           tickFormatter={(date) =>
             date.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" })
