@@ -1,6 +1,6 @@
 import { ThermometerSnowflake, ThermometerSun } from 'lucide-react';
 import { useState } from 'react';
-import { Bar, Brush, ComposedChart, Line, Scatter, Tooltip, XAxis } from "recharts";
+import { Bar, Brush, ComposedChart, Line, Scatter, Tooltip, XAxis, ZAxis } from "recharts";
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import type { TooltipProps } from 'recharts/types/component/Tooltip';
 import { useTemperature } from '../../context/temperature-context';
@@ -30,7 +30,7 @@ const chartConfig = {
 } as const satisfies ChartConfig
 
 export function TemperatureChart()  {
-  const { temperatureData: data, from, to, maxTemp, minTemp } = useTemperature()
+  const { data, from, to, maxTemp, minTemp } = useTemperature()
   const [showMaxTemp, setShowMaxTemp] = useState(false)
   const [showMinTemp, setShowMinTemp] = useState(false)
 
@@ -65,24 +65,24 @@ export function TemperatureChart()  {
           cursor={false}
           content={(props) => <CustomToolTip {...props} />}
           />
-        <Scatter
-          key="scatter-max"
-          dataKey="max"
-          fill={chartConfig.max.color}
-          shape='cross'
-          hide={!showMaxTemp}
-          isAnimationActive={false}
-        />
-        <Scatter
-          key="scatter-min"
-          dataKey="min"
-          fill={chartConfig.min.color}
-          shape='cross'
-          hide={!showMinTemp}
-          isAnimationActive={false}
-        />
         <Line key="line-low" dataKey="low" stroke={chartConfig.low.color} dot={false} isAnimationActive={false} />
         <Line key="line-high" dataKey="high" stroke={chartConfig.high.color} dot={false} isAnimationActive={false} />
+          <Scatter
+            key="scatter-max"
+            dataKey="maxTemp"
+            fill={chartConfig.max.color}
+            shape='cross'
+            hide={!showMaxTemp}
+            isAnimationActive={false}
+          />
+          <Scatter
+            key="scatter-min"
+            dataKey="minTemp"
+            fill={chartConfig.min.color}
+            shape='cross'
+            hide={!showMinTemp}
+            isAnimationActive={false}
+          />
         {data?.length > 150 && <Brush
           dataKey="date"
           stroke="var(--foreground)"
@@ -91,18 +91,21 @@ export function TemperatureChart()  {
           className="[&>rect:first-of-type]:hidden [&>.recharts-surface]:overflow-visible [&>.recharts-brush-texts>text]:fill-temperature overflow-visible"
           >
           <ComposedChart>
+            <ZAxis type="number" dataKey="maxTemp" range={[20, 20]} />
             <Bar dataKey="lowhigh" fill="oklch(55.4% 0.046 257.417)" />
             <Scatter
               key="brush-scatter-max"
-              dataKey="max"
+              dataKey="maxTemp"
               fill={chartConfig.max.color}
               shape='cross'
               hide={!showMaxTemp}
               isAnimationActive={false}
+              className='pointer-events-none'
             />
             <Scatter
               key="brush-scatter-min"
-              dataKey="min"
+              dataKey="minTemp"
+
               fill={chartConfig.min.color}
               shape='cross'
               hide={!showMinTemp}

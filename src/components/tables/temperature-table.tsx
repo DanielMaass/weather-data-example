@@ -15,7 +15,7 @@ import { cn } from "../../lib/utils"
 import { temperatureColumns } from "./temperature-columns"
 
 export const TemperatureTable = () => {
-  const { temperatureData: data, sorting, setSorting } = useTemperature()
+  const { data, sorting, setSorting } = useTemperature()
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const table = useReactTable({
     columns: temperatureColumns,
