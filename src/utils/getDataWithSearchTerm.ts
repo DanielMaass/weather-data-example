@@ -1,8 +1,8 @@
-import { TemperatureDataRow } from '../lib/temperature-data-types'
+import { PrecipitationDataRow, TemperatureDataRow } from '../types'
 import { parseDateSearch } from './parseDateSearch'
 import { parseNumericSearch } from './parseNumericSearch'
 
-export function getDataWithSearchTerm(data: TemperatureDataRow[], searchTerm: string): TemperatureDataRow[] {
+export function getDataWithSearchTerm(data: (TemperatureDataRow | PrecipitationDataRow)[], searchTerm: string): (TemperatureDataRow | PrecipitationDataRow)[] {
   if(!data.length) return []
 
   const term = searchTerm.trim()
@@ -10,10 +10,16 @@ export function getDataWithSearchTerm(data: TemperatureDataRow[], searchTerm: st
 
   const numericSearch = parseNumericSearch(term)
   const dateSearch = parseDateSearch(term)
-  const searchedData = new Set<TemperatureDataRow[]>()
+
+  const searchedData = new Set<typeof data>()
 
   if (numericSearch != null) {
-    searchedData.add(data.filter((d) => d.low === numericSearch || d.high === numericSearch))
+    searchedData.add(data.filter((d) => {
+      if ('low' in d && d.low === numericSearch) return true
+      if ('high' in d && d.high === numericSearch) return true
+      if ('value' in d && d.value === numericSearch) return true
+      return false
+    }))
   }
 
   if (dateSearch) {

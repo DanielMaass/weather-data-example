@@ -1,11 +1,19 @@
 import { SearchIcon, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useTemperature } from '../context/temperature-context';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { cn } from '../lib/utils';
 import { Button } from './ui/button';
 
-export function Search() {
-  const { searchTerm, setSearchTerm } = useTemperature();
+type UseSearchResult = {
+  searchTerm: string
+  setSearchTerm: Dispatch<SetStateAction<string>>
+}
+
+type SearchProps = {
+  useContextHook: () => UseSearchResult
+}
+
+export function Search({ useContextHook }: SearchProps) {
+  const { searchTerm, setSearchTerm } = useContextHook();
   const [isActive, setIsActive] = useState(searchTerm.length > 0);
   const [localValue, setLocalValue] = useState(searchTerm);
 

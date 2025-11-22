@@ -1,46 +1,34 @@
-import { useQuery } from "@tanstack/react-query"
-import { createFileRoute, Link } from "@tanstack/react-router"
-import { magdeburgDataQuery } from "../lib/magdeburgData.query"
-import { ButtonGroup } from "../components/ui/button-group"
-import { Button, buttonVariants } from "../components/ui/button"
+import { createFileRoute } from "@tanstack/react-router"
+import { PrecipitationChart } from '../components/charts/precipitation-chart'
 import { Header } from "../components/Header"
-import { cn } from "../lib/utils"
-import { BubblesIcon, CloudHailIcon, ThermometerSunIcon } from "lucide-react"
 import { MainNav } from "../components/MainNav"
+import { Search } from '../components/Search'
+import { PrecipitationTable } from '../components/tables/precipitation-table'
+import { TimeRangeSwitch } from '../components/TimeRangeSwitch'
+import { PrecipitationProvider, usePrecipitation } from '../context/precipitation-context'
 
 export const Route = createFileRoute("/precipitation")({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { data } = useQuery(magdeburgDataQuery)
 
   return (
-    <div className="p-8">
-      <div className="grow py-8 px-20 space-y-6 max-w-4xl mx-auto">
-        <Header />
-
-        <div className="flex justify-between items-end gap-2">
-          <MainNav />
-          <ButtonGroup aria-label="Zeitraum auswählen">
-            <Button variant="ghost" size="sm">
-              1M
-            </Button>
-            <Button variant="ghost" size="sm">
-              6M
-            </Button>
-            <Button variant="ghost" size="sm">
-              1J
-            </Button>
-            <Button variant="ghost" size="sm">
-              Max
-            </Button>
-          </ButtonGroup>
+    <PrecipitationProvider>
+      <div className="flex">
+        <div className="grow py-8 px-20 space-y-6 max-w-4xl mx-auto">
+          <div className="flex justify-between items-end gap-4">
+            <Header />
+            <Search useContextHook={usePrecipitation}/>
+          </div>
+          <div className="flex justify-between items-end gap-2">
+            <MainNav />
+            <TimeRangeSwitch useContextHook={usePrecipitation} color="precipitation" />
+          </div>
+          <PrecipitationChart />
         </div>
-        <p className="text-xs">Niederschlag in mm</p>
+        <PrecipitationTable />
       </div>
-      Precipitation details
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-    </div>
+    </PrecipitationProvider>
   )
 }

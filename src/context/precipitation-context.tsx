@@ -2,16 +2,16 @@ import { useQuery } from '@tanstack/react-query'
 import { SortingState } from '@tanstack/react-table'
 import { createContext, useContext, useMemo, useState } from 'react'
 import { magdeburgDataQuery } from '../lib/magdeburgData.query'
-import { TemperatureContextValue, TimeRange } from '../types'
-import { addMaxMinTempValues } from '../utils/addMaxMinTempValues'
+import { PrecipitationContextValue, TimeRange } from '../types'
+import { addMaxValues } from '../utils/addMaxValues'
 import { getDataInTimeRange } from '../utils/getDataInTimeRange'
 import { getDataWithSearchTerm } from '../utils/getDataWithSearchTerm'
-import { getTemperatureData } from '../utils/getTemperatureData'
+import { getPrecipitationData } from '../utils/getPrecipitationData'
 import { sortByTableSort } from '../utils/sortByTableSort'
 
-const TemperatureContext = createContext<TemperatureContextValue | undefined>(undefined)
+const PrecipitationContext = createContext<PrecipitationContextValue | undefined>(undefined)
 
-export function TemperatureProvider({ children }: { children: React.ReactNode }) {
+export function PrecipitationProvider({ children }: { children: React.ReactNode }) {
   //original data
   const { data, isLoading, isError } = useQuery(magdeburgDataQuery)
   //state management
@@ -19,10 +19,10 @@ export function TemperatureProvider({ children }: { children: React.ReactNode })
   const [timeRange, setTimeRange] = useState<TimeRange>('Max')
   const [searchTerm, setSearchTerm] = useState<string>('')
   // data processing
-  const temperatureData = useMemo(() => getTemperatureData(data), [data])
-  const timeRangeData = useMemo(() => getDataInTimeRange(temperatureData, timeRange), [temperatureData, timeRange])
+  const precipitationData = useMemo(() => getPrecipitationData(data), [data])
+  const timeRangeData = useMemo(() => getDataInTimeRange(precipitationData, timeRange), [precipitationData, timeRange])
   const searchTermData = useMemo(() => getDataWithSearchTerm(timeRangeData, searchTerm), [timeRangeData, searchTerm])
-  const { data: tempData, maxTemp, minTemp } = useMemo(() => addMaxMinTempValues(searchTermData), [searchTermData])
+  const { data: tempData, max } = useMemo(() => addMaxValues(searchTermData), [searchTermData])
   const tableSortData = useMemo(() => sortByTableSort(tempData, sorting), [tempData, sorting])
 
   const [from, to] = useMemo(() => {
@@ -32,7 +32,7 @@ export function TemperatureProvider({ children }: { children: React.ReactNode })
   }, [tempData])
 
 
-  const value: TemperatureContextValue = {
+  const value: PrecipitationContextValue = {
     data: tableSortData,
     timeRange,
     setTimeRange,
@@ -40,19 +40,18 @@ export function TemperatureProvider({ children }: { children: React.ReactNode })
     setSorting,
     from,
     to,
-    maxTemp,
-    minTemp,
+    max,
     searchTerm,
     setSearchTerm,
     isLoading,
     isError,
   }
 
-  return <TemperatureContext.Provider value={value}>{children}</TemperatureContext.Provider>
+  return <PrecipitationContext.Provider value={value}>{children}</PrecipitationContext.Provider>
 }
 
-export function useTemperature() {
-  const ctx = useContext(TemperatureContext)
-  if (!ctx) throw new Error('useTemperature must be used within TemperatureProvider')
+export function usePrecipitation() {
+  const ctx = useContext(PrecipitationContext)
+  if (!ctx) throw new Error('usePrecipitation must be used within PrecipitationProvider')
   return ctx
 }

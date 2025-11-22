@@ -1,13 +1,15 @@
 import { SortingState } from '@tanstack/react-table';
-import { TemperatureDataRow } from '../lib/temperature-data-types';
+import { PrecipitationDataRow, TemperatureDataRow } from '../types';
 
-export function sortByTableSort(data: TemperatureDataRow[], sorting:SortingState): TemperatureDataRow[] {
+type DataRow = TemperatureDataRow | PrecipitationDataRow;
+
+export function sortByTableSort(data: DataRow[], sorting:SortingState): DataRow[] {
   if (!sorting.length) return data
 
-  return data.toSorted((a: TemperatureDataRow, b: TemperatureDataRow) => {
+  return data.toSorted((a: DataRow, b: DataRow) => {
     for (const { id, desc } of sorting) {
-      const va = a[id as keyof TemperatureDataRow]
-      const vb = b[id as keyof TemperatureDataRow]
+      const va = a[id as keyof DataRow]
+      const vb = b[id as keyof DataRow]
       if (va == null && vb == null) continue
       if (va == null) return desc ? 1 : -1
       if (vb == null) return desc ? -1 : 1

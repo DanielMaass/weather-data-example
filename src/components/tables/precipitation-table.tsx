@@ -9,16 +9,16 @@ import {
 import { useVirtualizer, VirtualItem, Virtualizer } from "@tanstack/react-virtual"
 import { ArrowDown, ArrowUp } from "lucide-react"
 import { RefObject, useEffect, useRef } from "react"
-import { useTemperature } from '../../context/temperature-context'
+import { usePrecipitation } from '../../context/precipitation-context'
 import { cn } from "../../lib/utils"
-import { TemperatureDataRow } from '../../types'
-import { temperatureColumns } from "./temperature-columns"
+import { PrecipitationDataRow } from '../../types'
+import { precipitationColumns } from './precipitation-columns'
 
-export const TemperatureTable = () => {
-  const { data, sorting, setSorting } = useTemperature()
+export const PrecipitationTable = () => {
+  const { data, sorting, setSorting } = usePrecipitation()
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const table = useReactTable({
-    columns: temperatureColumns,
+    columns: precipitationColumns,
     data,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -98,7 +98,7 @@ function VirtualizedTableBody({
   table,
   scrollContainerRef,
 }: {
-  table: Table<TemperatureDataRow>
+  table: Table<PrecipitationDataRow>
   scrollContainerRef: RefObject<HTMLDivElement | null>
 }) {
   const { rows } = table.getRowModel()
@@ -162,7 +162,7 @@ function VirtualizedTableBody({
       }}
     >
       {virtualItems.map((virtualRow) => {
-        const row = rows[virtualRow.index] as Row<TemperatureDataRow>
+        const row = rows[virtualRow.index] as Row<PrecipitationDataRow>
         return <TableBodyRow key={row.id} row={row} virtualRow={virtualRow} rowVirtualizer={rowVirtualizer} />
       })}
     </div>
@@ -174,7 +174,7 @@ function TableBodyRow({
   virtualRow,
   rowVirtualizer,
 }: {
-  row: Row<TemperatureDataRow>
+  row: Row<PrecipitationDataRow>
   virtualRow: VirtualItem
   rowVirtualizer: Virtualizer<HTMLDivElement, HTMLElement>
 }) {

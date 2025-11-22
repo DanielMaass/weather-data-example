@@ -1,6 +1,6 @@
-import { TemperatureDataRow } from '../lib/temperature-data-types'
+import { TemperatureDataRow } from '../types'
 
-export function addMaxMinValues(data: TemperatureDataRow[]) {
+export function addMaxMinTempValues(data: TemperatureDataRow[]) {
   if (!data.length) return { data: [], maxTemp: null, minTemp: null }
 
   const highs = data.filter(d => d.high != null).map(d => d.high as number)

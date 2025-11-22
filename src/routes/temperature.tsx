@@ -2,27 +2,28 @@ import { createFileRoute } from "@tanstack/react-router"
 import { TemperatureChart } from "../components/charts/temperature-chart"
 import { Header } from "../components/Header"
 import { MainNav } from "../components/MainNav"
+import { Search } from '../components/Search'
 import { TemperatureTable } from "../components/tables/temperature-table"
 import { TimeRangeSwitch } from '../components/TimeRangeSwitch'
-import { TemperatureProvider } from '../context/temperature-context'
-import { Search } from '../components/Search'
+import { TemperatureProvider, useTemperature } from '../context/temperature-context'
 
 export const Route = createFileRoute("/temperature")({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+
   return (
     <TemperatureProvider>
       <div className="flex">
         <div className="grow py-8 px-20 space-y-6 max-w-4xl mx-auto">
           <div className="flex justify-between items-end gap-4">
             <Header />
-            <Search />
+            <Search useContextHook={useTemperature} />
           </div>
           <div className="flex justify-between items-end gap-2">
             <MainNav />
-            <TimeRangeSwitch />
+            <TimeRangeSwitch useContextHook={useTemperature} color="temperature" />
           </div>
           <TemperatureChart />
         </div>
