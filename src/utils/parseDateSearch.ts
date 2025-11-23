@@ -57,7 +57,7 @@ export function parseDateSearch(raw: string): DateSearch | undefined {
       }
 
       // Pattern textual month with optional day: 21.sep, 21.sept2025, allow trailing dot
-      // allow month text prefixes like 'M' or 'Ma' as well as full names
+      // allow month text from 1-9 characters (prefixes or full names, after normalization to lowercase)
       const txtMatch = s.match(/^(\d{1,2})\.([a-zäöü]{1,9})\.?((\d{2}|\d{4}))?\.?$/)
       if (txtMatch) {
         const day = Number(txtMatch[1])
