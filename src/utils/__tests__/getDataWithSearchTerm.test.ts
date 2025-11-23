@@ -111,7 +111,3 @@ describe('getDataWithSearchTerm', () => {
   })
 })
 
-function dateYMD(y: number, m: number, d: number) {
-  return new Date(Date.UTC(y, m - 1, d))
-}
-
