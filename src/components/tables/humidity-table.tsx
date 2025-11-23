@@ -30,7 +30,7 @@ export const HumidityTable = () => {
 
   return (
     <div
-      className="custom-scrollbar grow bg-black/5 border-l border-black/10"
+      className="custom-scrollbar bg-black/5 border-l border-black/10 w-fit shrink-0"
       ref={tableContainerRef}
       style={{
         overflow: "auto", //our scrollable table container
@@ -52,7 +52,7 @@ export const HumidityTable = () => {
           }}
         >
           {table.getHeaderGroups().map((headerGroup) => (
-            <div key={headerGroup.id} role="row" style={{ display: "flex", width: "100%" }}>
+            <div key={headerGroup.id} role="row" style={{ display: "flex" }}>
               {headerGroup.headers.map((header) => {
                 const align = (header.column.columnDef.meta as any)?.align ?? "left"
                 return (
@@ -188,7 +188,6 @@ function TableBodyRow({
         display: "flex",
         position: "absolute",
         transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
-        width: "100%",
         paddingInline: "1rem",
       }}
     >

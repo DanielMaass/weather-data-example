@@ -15,8 +15,8 @@ function RouteComponent() {
 
   return (
     <HumidityProvider>
-          <div className="flex">
-            <div className="grow py-8 px-20 space-y-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-[1fr_auto]">
+            <div className="py-8 px-20 space-y-6 min-w-0">
               <div className="flex justify-between items-end gap-4">
                 <Header />
                 <Search useContextHook={useHumidity} color="humidity"/>
