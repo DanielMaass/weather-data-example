@@ -20,7 +20,7 @@ export const temperatureColumns = [
     meta: { align: "right" },
   }),
   columnHelper.accessor("high", {
-    header: () => React.createElement('span', { 'data-testid': 'temperature-high-header' }, 'Höchstwerte (°C)'),
+    header: () => <span data-testid="temperature-high-header">Höchstwerte (°C)</span>,
     meta: { align: "right" },
   }),
 ]
