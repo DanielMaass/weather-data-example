@@ -6,16 +6,17 @@ import { TimeRangeSwitch } from '../components/TimeRangeSwitch'
 import { HumidityChart } from '../components/charts/humidity-chart'
 import { HumidityTable } from '../components/tables/humidity-table'
 import { HumidityProvider, useHumidity } from '../context/humidity-context'
+import { useShowTable } from '../lib/useMediaQuery'
 
 export const Route = createFileRoute("/humidity")({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-
+  const showTable = useShowTable()
   return (
     <HumidityProvider>
-          <div className="grid grid-cols-[1fr_auto]">
+          <div className={showTable ? "grid grid-cols-[1fr_auto]" : "block"}>
             <div className="py-8 px-20 space-y-6 min-w-0">
               <div className="flex justify-between items-end gap-4">
                 <Header />
@@ -27,7 +28,7 @@ function RouteComponent() {
               </div>
               <HumidityChart />
             </div>
-            <HumidityTable />
+            {showTable && <HumidityTable />}
           </div>
         </HumidityProvider>
   )
