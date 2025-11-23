@@ -157,3 +157,33 @@ code {
     --chart-5: oklch(0.645 0.246 16.439);
   }
 }
+
+/* Custom scrollbar used by virtualized table bodies */
+.custom-scrollbar {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
+}
+
+/* WebKit (Chrome, Edge, Safari) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.6); /* gray-blue thumb */
+  border-radius: 9999px;
+  border: 2px solid transparent; /* gives some padding */
+  background-clip: padding-box;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(148, 163, 184, 0.85);
+}
+
+/* Optional: a dark-mode variant that uses theme variables */
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(56, 189, 248, 0.6); /* sky-400-ish in dark mode */
+}
