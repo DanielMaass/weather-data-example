@@ -14,13 +14,13 @@ type SearchProps = VariantProps<typeof searchVariants> & {
 }
 
 const searchVariants = cva(
-  'relative flex gap-2 items-center rounded transition-shadow focus-within:ring [&>.search-button]:disabled:opacity-100',
+  'relative flex gap-2 items-center rounded transition-shadow focus-within:ring [&>#search-button]:disabled:opacity-100',
   {
     variants: {
       color: {
-        temperature: 'focus-within:ring-(--color-temperature) [&>#search-button]:disabled:text-temperature [&>#search-button]:hover:text-temperature',
-        precipitation: 'focus-within:ring-(--color-precipitation) [&>#search-button]:disabled:text-precipitation [&>#search-button]:hover:text-precipitation',
-        humidity: 'focus-within:ring-(--color-humidity) [&>#search-button]:disabled:text-humidity [&>#search-button]:hover:text-humidity',
+        temperature: 'ring-temperature focus-within:ring-temperature [&>#search-button]:disabled:text-temperature [&>#search-button]:hover:text-temperature',
+        precipitation: 'ring-precipitation focus-within:ring-precipitation [&>#search-button]:disabled:text-precipitation [&>#search-button]:hover:text-precipitation',
+        humidity: 'ring-humidity focus-within:ring-humidity [&>#search-button]:disabled:text-humidity [&>#search-button]:hover:text-humidity',
       }
     },
     defaultVariants: {
@@ -47,7 +47,7 @@ export function Search({ useContextHook, color }: SearchProps) {
   return (
     <div
       className={cn(searchVariants({ color }),
-        searchTerm && 'ring ring-(--color-temperature)'
+        searchTerm && 'ring'
       )}
     >
       <Button id="search-button" variant="ghost" onClick={() => setIsActive(true)} disabled={isActive}>
