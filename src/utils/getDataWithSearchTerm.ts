@@ -93,7 +93,7 @@ export function getDataWithSearchTerm(data: DataRow[], searchTerm: string): Data
       }
 
       // Integer search: match numeric fields whose integer part equals the number
-      if (nums.some((v) => Math.trunc(Math.abs(v)) === Math.trunc(Math.abs(normalizedNum)))) {
+      if (nums.some((v) => Math.trunc(v) === Math.trunc(normalizedNum))) {
         results.add(row)
         continue
       }
