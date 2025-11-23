@@ -31,7 +31,7 @@ describe('parseDateSearch', () => {
   })
 })
 
-describe('parseDateSearch', () => {
+describe('parseDateSearch - additional patterns', () => {
   it('parses month-only names', () => {
     expect(parseDateSearch('september')).toEqual({ month: 8 })
     expect(parseDateSearch('Sept')).toEqual({ month: 8 })
