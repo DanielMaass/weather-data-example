@@ -1,3 +1,4 @@
+import { cva, VariantProps } from 'class-variance-authority';
 import { SearchIcon, X } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { cn } from '../lib/utils';
@@ -8,11 +9,27 @@ type UseSearchResult = {
   setSearchTerm: Dispatch<SetStateAction<string>>
 }
 
-type SearchProps = {
+type SearchProps = VariantProps<typeof searchVariants> & {
   useContextHook: () => UseSearchResult
 }
 
-export function Search({ useContextHook }: SearchProps) {
+const searchVariants = cva(
+  'relative flex gap-2 items-center rounded transition-shadow focus-within:ring [&>.search-button]:disabled:opacity-100',
+  {
+    variants: {
+      color: {
+        temperature: 'focus-within:ring-(--color-temperature) [&>#search-button]:disabled:text-temperature [&>#search-button]:hover:text-temperature',
+        precipitation: 'focus-within:ring-(--color-precipitation) [&>#search-button]:disabled:text-precipitation [&>#search-button]:hover:text-precipitation',
+        humidity: 'focus-within:ring-(--color-humidity) [&>#search-button]:disabled:text-humidity [&>#search-button]:hover:text-humidity',
+      }
+    },
+    defaultVariants: {
+      color: 'temperature',
+    }
+  }
+)
+
+export function Search({ useContextHook, color }: SearchProps) {
   const { searchTerm, setSearchTerm } = useContextHook();
   const [isActive, setIsActive] = useState(searchTerm.length > 0);
   const [localValue, setLocalValue] = useState(searchTerm);
@@ -29,13 +46,11 @@ export function Search({ useContextHook }: SearchProps) {
 
   return (
     <div
-      className={cn(
-        'relative flex gap-2 items-center rounded transition-shadow',
-        'focus-within:ring focus-within:ring-(--color-temperature)',
+      className={cn(searchVariants({ color }),
         searchTerm && 'ring ring-(--color-temperature)'
       )}
     >
-      <Button variant="ghost" onClick={() => setIsActive(true)} disabled={isActive} className='disabled:text-temperature disabled:opacity-100 hover:text-temperature'>
+      <Button id="search-button" variant="ghost" onClick={() => setIsActive(true)} disabled={isActive}>
         <SearchIcon />
       </Button>
       {isActive &&

@@ -27,7 +27,7 @@ const chartConfig = {
     color: "#3B8CFF",
   },
 
-} as const satisfies ChartConfig
+} satisfies ChartConfig
 
 export function TemperatureChart()  {
   const { data, from, to, maxTemp, minTemp } = useTemperature()
@@ -144,16 +144,16 @@ function CustomToolTip({label, payload}: TooltipProps<ValueType, NameType>) {
 
     return (
       <div className='space-y-1 p-2 rounded bg-background/20 backdrop-blur-xs border border-black/10 shadow-lg'>
-        <p>{dateLabel}</p>
+        <p className='text-white/80'>{dateLabel}</p>
         <div className='flex gap-1 items-center'>
           <span className={`w-2 h-2 rounded`} style={{backgroundColor: cfg1?.color}}></span>
           <span className='grow text-left'>{cfg1?.label}</span>
-          <span>{payload?.[1]?.value}°C</span>
+          <span className='text-white/80'>{payload?.[1]?.value}°C</span>
         </div>
         <div className='flex gap-1 items-center'>
           <span className={`w-2 h-2 rounded`} style={{backgroundColor: cfg0?.color}}></span>
           <span className='grow text-left'>{cfg0?.label}</span>
-          <span>{payload?.[0]?.value}°C</span>
+          <span className='text-white/80'>{payload?.[0]?.value}°C</span>
         </div>
       </div>
     )

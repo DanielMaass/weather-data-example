@@ -1,33 +1,33 @@
 import { CloudRainWind } from 'lucide-react';
 import { useState } from 'react';
-import { Bar, Brush, ComposedChart, Scatter, Tooltip, XAxis, ZAxis } from "recharts";
+import { Area, Bar, Brush, ComposedChart, Scatter, XAxis, ZAxis } from "recharts";
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import type { TooltipProps } from 'recharts/types/component/Tooltip';
-import { usePrecipitation } from '../../context/precipitation-context';
+import { useHumidity } from '../../context/humidity-context';
 import { cn } from '../../lib/utils';
 import { formatShortDate } from '../../utils/formatShortDate';
 import { Button } from '../ui/button';
-import { ChartConfig, ChartContainer } from "../ui/chart";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
 
 const chartConfig = {
   value: {
-    label: "Niederschlag",
-    color: "var(--color-precipitation)",
+    label: "rel. Luftfeuchtigkeit",
+    color: "var(--color-humidity)",
   },
   max: {
-    label: "max. Niederschlag (gesamt)",
+    label: "max. Luftfeuchtigkeit (gesamt)",
     color: "#FFA500",
   },
 } satisfies ChartConfig
 
-export function PrecipitationChart()  {
-  const { data, from, to, max } = usePrecipitation()
+export function HumidityChart()  {
+  const { data, from, to, max } = useHumidity()
   const [showMax, setShowMax] = useState(false)
 
   return (
     <>
     <div className='flex justify-between'>
-      <p className="text-xs">Niederschlag in mm</p>
+      <p className="text-xs">rel. Luftfeuchtigkeit in %</p>
       <p className="text-xs">Zeitraum von {formatShortDate(from)} bis {formatShortDate(to)}</p>
     </div>
     <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full ">
@@ -51,11 +51,30 @@ export function PrecipitationChart()  {
           minTickGap={24}
           tickFormatter={formatShortDate}
         />
-        <Tooltip
-          cursor={{fill: 'var(--muted-foreground)', opacity: 0.1}}
-          content={(props) => <CustomToolTip {...props} />}
-          />
-        <Bar key="precipitation" dataKey="value" fill={chartConfig.value.color} />
+        <ChartTooltip cursor={false} content={<CustomToolTip />} />
+        <defs>
+          <linearGradient id="fillHumidity" x1="0" y1="0" x2="0" y2="1">
+            <stop
+              offset="5%"
+              stopColor="var(--color-humidity)"
+              stopOpacity={0.8}
+            />
+            <stop
+              offset="95%"
+              stopColor="var(--color-humidity)"
+              stopOpacity={0.1}
+            />
+          </linearGradient>
+        </defs>
+
+        <Area
+          key="humidity"
+          dataKey="value"
+          type="natural"
+          fill="url(#fillHumidity)"
+          fillOpacity={0.4}
+          stroke="var(--color-humidity)"
+        />
 
           <Scatter
             key="scatter-max"
@@ -115,7 +134,7 @@ function CustomToolTip({label, payload}: TooltipProps<ValueType, NameType>) {
         <div className='flex gap-1 items-center'>
           <span className={`w-2 h-2 rounded`} style={{backgroundColor: cfg0?.color}}></span>
           <span className='grow text-left'>{cfg0?.label}</span>
-          <span className='text-white/80'>{payload?.[0]?.value} mm</span>
+          <span className='text-white/80'>{payload?.[0]?.value} %</span>
         </div>
       </div>
     )

@@ -19,7 +19,7 @@ function RouteComponent() {
         <div className="grow py-8 px-20 space-y-6 max-w-4xl mx-auto">
           <div className="flex justify-between items-end gap-4">
             <Header />
-            <Search useContextHook={useTemperature} />
+            <Search useContextHook={useTemperature} color="temperature" />
           </div>
           <div className="flex justify-between items-end gap-2">
             <MainNav />
