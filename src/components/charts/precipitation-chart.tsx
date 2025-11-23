@@ -55,17 +55,20 @@ export function PrecipitationChart()  {
           cursor={{fill: 'var(--muted-foreground)', opacity: 0.1}}
           content={(props) => <CustomToolTip {...props} />}
           />
-        <Bar key="precipitation" dataKey="value" fill={chartConfig.value.color} />
-
-          <Scatter
-            key="scatter-max"
-            dataKey="max"
-            fill={chartConfig.max.color}
-            shape='cross'
-            hide={!showMax}
-            isAnimationActive={false}
-          />
-
+        <Bar
+          key="precipitation"
+          dataKey="value"
+          fill={chartConfig.value.color}
+          isAnimationActive={false}
+        />
+        <Scatter
+          key="scatter-max"
+          dataKey="max"
+          fill={chartConfig.max.color}
+          shape='cross'
+          hide={!showMax}
+          isAnimationActive={false}
+        />
         {data?.length > 150 && <Brush
           dataKey="date"
           stroke="var(--foreground)"
@@ -75,7 +78,7 @@ export function PrecipitationChart()  {
           >
           <ComposedChart>
             <ZAxis type="number" dataKey="max" range={[20, 20]} />
-            <Bar dataKey="value" fill="oklch(55.4% 0.046 257.417)" />
+            <Bar dataKey="value" fill="oklch(55.4% 0.046 257.417)" isAnimationActive={false} />
             <Scatter
               key="brush-scatter-max"
               dataKey="max"

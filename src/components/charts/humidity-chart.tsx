@@ -7,7 +7,7 @@ import { useHumidity } from '../../context/humidity-context';
 import { cn } from '../../lib/utils';
 import { formatShortDate } from '../../utils/formatShortDate';
 import { Button } from '../ui/button';
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
+import { ChartConfig, ChartContainer, ChartTooltip } from "../ui/chart";
 
 const chartConfig = {
   value: {
@@ -66,7 +66,6 @@ export function HumidityChart()  {
             />
           </linearGradient>
         </defs>
-
         <Area
           key="humidity"
           dataKey="value"
@@ -74,16 +73,16 @@ export function HumidityChart()  {
           fill="url(#fillHumidity)"
           fillOpacity={0.4}
           stroke="var(--color-humidity)"
+          isAnimationActive={false}
         />
-
-          <Scatter
-            key="scatter-max"
-            dataKey="max"
-            fill={chartConfig.max.color}
-            shape='cross'
-            hide={!showMax}
-            isAnimationActive={false}
-          />
+        <Scatter
+          key="scatter-max"
+          dataKey="max"
+          fill={chartConfig.max.color}
+          shape='cross'
+          hide={!showMax}
+          isAnimationActive={false}
+        />
 
         {data?.length > 150 && <Brush
           dataKey="date"
@@ -94,7 +93,7 @@ export function HumidityChart()  {
           >
           <ComposedChart>
             <ZAxis type="number" dataKey="max" range={[20, 20]} />
-            <Bar dataKey="value" fill="oklch(55.4% 0.046 257.417)" />
+            <Bar dataKey="value" fill="oklch(55.4% 0.046 257.417)" isAnimationActive={false} />
             <Scatter
               key="brush-scatter-max"
               dataKey="max"

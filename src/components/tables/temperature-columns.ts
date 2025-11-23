@@ -1,5 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { TemperatureDataRow } from "../../lib/temperature-data-types"
+import React from 'react'
+import { TemperatureDataRow } from '../../types'
 
 const columnHelper = createColumnHelper<TemperatureDataRow>()
 
@@ -19,7 +20,7 @@ export const temperatureColumns = [
     meta: { align: "right" },
   }),
   columnHelper.accessor("high", {
-    header: "Höchstwerte (°C)",
+    header: () => React.createElement('span', { 'data-testid': 'temperature-high-header' }, 'Höchstwerte (°C)'),
     meta: { align: "right" },
   }),
 ]

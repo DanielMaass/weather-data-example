@@ -56,6 +56,7 @@ export function Search({ useContextHook, color }: SearchProps) {
       {isActive &&
         <>
           <input
+            data-testid="search-input"
             type="text"
             value={localValue}
             onChange={(e) => setLocalValue(e.target.value)}

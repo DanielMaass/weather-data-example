@@ -65,24 +65,36 @@ export function TemperatureChart()  {
           cursor={false}
           content={(props) => <CustomToolTip {...props} />}
           />
-        <Line key="line-low" dataKey="low" stroke={chartConfig.low.color} dot={false} isAnimationActive={false} />
-        <Line key="line-high" dataKey="high" stroke={chartConfig.high.color} dot={false} isAnimationActive={false} />
-          <Scatter
-            key="scatter-max"
-            dataKey="maxTemp"
-            fill={chartConfig.max.color}
-            shape='cross'
-            hide={!showMaxTemp}
-            isAnimationActive={false}
-          />
-          <Scatter
-            key="scatter-min"
-            dataKey="minTemp"
-            fill={chartConfig.min.color}
-            shape='cross'
-            hide={!showMinTemp}
-            isAnimationActive={false}
-          />
+        <Line
+          key="line-low"
+          dataKey="low"
+          stroke={chartConfig.low.color}
+          dot={false}
+          isAnimationActive={false}
+        />
+        <Line
+          key="line-high"
+          dataKey="high"
+          stroke={chartConfig.high.color}
+          dot={false}
+          isAnimationActive={false}
+        />
+        <Scatter
+          key="scatter-max"
+          dataKey="maxTemp"
+          fill={chartConfig.max.color}
+          shape='cross'
+          hide={!showMaxTemp}
+          isAnimationActive={false}
+        />
+        <Scatter
+          key="scatter-min"
+          dataKey="minTemp"
+          fill={chartConfig.min.color}
+          shape='cross'
+          hide={!showMinTemp}
+          isAnimationActive={false}
+        />
         {data?.length > 150 && <Brush
           dataKey="date"
           stroke="var(--foreground)"
@@ -92,7 +104,11 @@ export function TemperatureChart()  {
           >
           <ComposedChart>
             <ZAxis type="number" dataKey="maxTemp" range={[20, 20]} />
-            <Bar dataKey="lowhigh" fill="oklch(55.4% 0.046 257.417)" />
+            <Bar
+              dataKey="lowhigh"
+              fill="oklch(55.4% 0.046 257.417)"
+              isAnimationActive={false}
+            />
             <Scatter
               key="brush-scatter-max"
               dataKey="maxTemp"
@@ -105,7 +121,6 @@ export function TemperatureChart()  {
             <Scatter
               key="brush-scatter-min"
               dataKey="minTemp"
-
               fill={chartConfig.min.color}
               shape='cross'
               hide={!showMinTemp}
@@ -116,7 +131,7 @@ export function TemperatureChart()  {
       </ComposedChart>
     </ChartContainer>
     <div className='flex gap-1'>
-      <Button variant="ghost" onClick={() => setShowMaxTemp((prev) => !prev)} className={cn("text-xs h-fit", showMaxTemp && "bg-muted-foreground/40")} style={{color: showMaxTemp ? chartConfig.max.color : undefined}}><ThermometerSun className='w-6 h-6 size-6' />
+      <Button data-testid="toggle-max-temp" variant="ghost" onClick={() => setShowMaxTemp((prev) => !prev)} className={cn("text-xs h-fit", showMaxTemp && "bg-muted-foreground/40")} style={{color: showMaxTemp ? chartConfig.max.color : undefined}}><ThermometerSun className='w-6 h-6 size-6' />
       <div className='flex flex-col items-start'>
         <span>{chartConfig.max.label}</span>
         <span className='text-lg leading-4'>{maxTemp}°C</span>
