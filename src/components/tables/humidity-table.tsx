@@ -11,7 +11,7 @@ import { ArrowDown, ArrowUp } from "lucide-react"
 import { RefObject, useEffect, useRef } from "react"
 import { useHumidity } from '../../context/humidity-context'
 import { cn } from "../../lib/utils"
-import { HumidityDataRow } from '../../types'
+import type { HumidityDataRow } from '../../types'
 import { humidityColumns } from './humidity-columns'
 
 export const HumidityTable = () => {

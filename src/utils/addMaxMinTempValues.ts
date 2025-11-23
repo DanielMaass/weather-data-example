@@ -1,4 +1,4 @@
-import { TemperatureDataRow } from '../types'
+import type { TemperatureDataRow } from '../types'
 
 export function addMaxMinTempValues(data: TemperatureDataRow[]) {
   if (!data.length) return { data: [], maxTemp: null, minTemp: null }

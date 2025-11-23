@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { HumidityDataRow } from '../../types'
+import type { HumidityDataRow } from '../../types'
 
 
 const columnHelper = createColumnHelper<HumidityDataRow>()

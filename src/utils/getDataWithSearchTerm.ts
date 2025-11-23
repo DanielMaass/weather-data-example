@@ -1,4 +1,4 @@
-import { HumidityDataRow, PrecipitationDataRow, TemperatureDataRow } from '../types';
+import type { HumidityDataRow, PrecipitationDataRow, TemperatureDataRow } from '../types';
 import { parseDateSearch } from './parseDateSearch';
 import { parseNumericSearch } from './parseNumericSearch';
 
@@ -13,19 +13,20 @@ export function getDataWithSearchTerm(data: DataRow[], searchTerm: string): Data
   const numericSearch = parseNumericSearch(term)
   const dateSearch = parseDateSearch(term)
 
-  const searchedData = new Set<DataRow[]>()
+  const searchedData = new Set<DataRow>()
 
   if (numericSearch != null) {
-    searchedData.add(data.filter((d) => {
+    const matches = data.filter((d) => {
       if ('low' in d && d.low === numericSearch) return true
       if ('high' in d && d.high === numericSearch) return true
       if ('value' in d && d.value === numericSearch) return true
       return false
-    }))
+    })
+    matches.forEach((m) => searchedData.add(m))
   }
 
   if (dateSearch) {
-    searchedData.add(data.filter((d) => {
+    const matches = data.filter((d) => {
       const dd = d.date.getDate()
       const mm = d.date.getMonth()
       const yyyy = d.date.getFullYear()
@@ -33,8 +34,9 @@ export function getDataWithSearchTerm(data: DataRow[], searchTerm: string): Data
         return dd === dateSearch.day && mm === dateSearch.month && yyyy === dateSearch.year
       }
       return dd === dateSearch.day && mm === dateSearch.month
-    }))
+    })
+    matches.forEach((m) => searchedData.add(m))
   }
 
-  return searchedData.size ? Array.from(searchedData).flat() : data
+  return searchedData.size ? Array.from(searchedData) : data
 }

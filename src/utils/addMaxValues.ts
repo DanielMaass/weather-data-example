@@ -1,4 +1,4 @@
-import { PrecipitationDataRow } from '../types'
+import type { PrecipitationDataRow } from '../types'
 
 export function addMaxValues(data: PrecipitationDataRow[]) {
   if (!data.length) return { data: [], max: null }

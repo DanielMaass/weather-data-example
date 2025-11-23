@@ -11,7 +11,7 @@ import { ArrowDown, ArrowUp } from "lucide-react"
 import { RefObject, useEffect, useRef } from "react"
 import { useTemperature } from '../../context/temperature-context'
 import { cn } from "../../lib/utils"
-import { TemperatureDataRow } from '../../types'
+import type { TemperatureDataRow } from '../../types'
 import { temperatureColumns } from "./temperature-columns"
 
 export const TemperatureTable = () => {

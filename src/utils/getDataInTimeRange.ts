@@ -1,6 +1,6 @@
-import { PrecipitationDataRow, TemperatureDataRow } from '../types'
+import type { HumidityDataRow, PrecipitationDataRow, TemperatureDataRow } from '../types'
 
-export function getDataInTimeRange(data: (TemperatureDataRow | PrecipitationDataRow)[], timeRange: '1M' | '6M' | '1J' | 'Max'): (TemperatureDataRow | PrecipitationDataRow)[] {
+export function getDataInTimeRange(data: (TemperatureDataRow | PrecipitationDataRow | HumidityDataRow)[], timeRange: '1M' | '6M' | '1J' | 'Max'): (TemperatureDataRow | PrecipitationDataRow | HumidityDataRow)[] {
   if (!data.length) return []
 
   const lastDate = data[data.length - 1].date

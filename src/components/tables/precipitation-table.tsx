@@ -11,7 +11,7 @@ import { ArrowDown, ArrowUp } from "lucide-react"
 import { RefObject, useEffect, useRef } from "react"
 import { usePrecipitation } from '../../context/precipitation-context'
 import { cn } from "../../lib/utils"
-import { PrecipitationDataRow } from '../../types'
+import type { PrecipitationDataRow } from '../../types'
 import { precipitationColumns } from './precipitation-columns'
 
 export const PrecipitationTable = () => {

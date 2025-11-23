@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../lib/utils'
-import { TimeRange } from '../types'
+import type { TimeRange } from '../types'
 import { Button } from './ui/button'
 import { ButtonGroup } from './ui/button-group'
 

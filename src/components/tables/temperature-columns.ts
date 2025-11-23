@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import React from 'react'
-import { TemperatureDataRow } from '../../types'
+import type { TemperatureDataRow } from '../../types'
 
 const columnHelper = createColumnHelper<TemperatureDataRow>()
 

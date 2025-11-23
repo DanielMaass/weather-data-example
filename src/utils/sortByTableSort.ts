@@ -1,5 +1,5 @@
 import { SortingState } from '@tanstack/react-table';
-import { PrecipitationDataRow, TemperatureDataRow } from '../types';
+import type { PrecipitationDataRow, TemperatureDataRow } from '../types';
 
 type DataRow = TemperatureDataRow | PrecipitationDataRow;
 
