@@ -32,7 +32,7 @@ const searchVariants = cva(
 export function Search({ useContextHook, color }: SearchProps) {
   const { searchTerm, setSearchTerm } = useContextHook();
   const [isActive, setIsActive] = useState(searchTerm.length > 0);
-  const [localValue, setLocalValue] = useState(searchTerm);
+  const [localValue, setLocalValue] = useState(searchTerm || '');
 
   // Debounce updates to global searchTerm to avoid heavy recomputations each keystroke
   useEffect(() => {
@@ -67,15 +67,20 @@ export function Search({ useContextHook, color }: SearchProps) {
             )}
             onBlur={() => setIsActive(searchTerm.length > 0)}
           />
-          <Button
-            aria-label='Eingabe löschen'
-            onClick={() => { setLocalValue(''); setSearchTerm(''); setIsActive(false) }}
-            variant="ghost"
-            size="icon-sm"
-
-          >
-            <X className='w-4 h-4 text-foreground' />
-          </Button>
+          {localValue && (
+            <Button
+              aria-label='Eingabe löschen'
+              onClick={() => {
+                setLocalValue('');
+                setSearchTerm('');
+                setIsActive(false);
+              }}
+              variant="ghost"
+              size="icon-sm"
+            >
+              <X className='w-4 h-4 text-foreground' />
+            </Button>
+          )}
         </>
       }
     </div>

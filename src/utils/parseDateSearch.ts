@@ -1,36 +1,23 @@
 export type DateSearch = {
-  day: number
-  month: number
+  day?: number
+  month?: number
+  monthName?: string
   year?: number
 }
 
-// Parse month names (German + common abbreviations)
+// Parse month names (German: keep canonical short and long forms + common variants)
 const monthMap: Record<string, number> = {
-  jan: 0,
   januar: 0,
-  feb: 1,
   februar: 1,
-  mär: 2,
-  maer: 2,
-  mar: 2,
   märz: 2,
-  maerz: 2,
-  apr: 3,
   april: 3,
   mai: 4,
-  jun: 5,
   juni: 5,
-  jul: 6,
   juli: 6,
-  aug: 7,
   august: 7,
-  sep: 8,
-  sept: 8,
+  september: 8,
   oktober: 9,
-  okt: 9,
-  nov: 10,
   november: 10,
-  dez: 11,
   dezember: 11,
 }
 
@@ -42,6 +29,10 @@ export function parseDateSearch(raw: string): DateSearch | undefined {
         .replace(/ae/g, 'ä')
         .replace(/oe/g, 'ö')
         .replace(/ue/g, 'ü')
+
+      // Normalize a dot directly after a month token before a year (e.g. 'sept.2025' or 'sept. 2025')
+      // Remove the dot when it sits between letters and digits so 'sept.2025' -> 'sept2025'
+      s = s.replace(/([a-zäöü])\.(?=\d)/g, '$1')
 
       // Pattern numeric month: 21.09., 21.9., 21.09, 21.09.25, 21.09.2025
       // Allow omission of third dot when year is absent (e.g. "13.03")
@@ -65,21 +56,56 @@ export function parseDateSearch(raw: string): DateSearch | undefined {
         return undefined
       }
 
-      // Pattern textual month: 21.sep, 21.sept, 21.sep25, 21.sept2025, allow trailing dot
-      const txtMatch = s.match(/^(\d{1,2})\.([a-zäöü]{3,9})\.?((\d{2}|\d{4}))?\.?$/)
+      // Pattern textual month with optional day: 21.sep, 21.sept2025, allow trailing dot
+      // allow month text from 1-9 characters (prefixes or full names, after normalization to lowercase)
+      const txtMatch = s.match(/^(\d{1,2})\.([a-zäöü]{1,9})\.?((\d{2}|\d{4}))?\.?$/)
       if (txtMatch) {
         const day = Number(txtMatch[1])
-        const monthName = txtMatch[2]
+        const monthToken = txtMatch[2]
         const yearRaw = txtMatch[3]
-        const month = monthMap[monthName]
-        if (month == null) return undefined
         let year: number | undefined
         if (yearRaw) {
           if (yearRaw.length === 2) year = 2000 + Number(yearRaw)
           else if (yearRaw.length === 4) year = Number(yearRaw)
         }
-        if (day >= 1 && day <= 31) return { day, month, year }
-        return undefined
+        if (day < 1 || day > 31) return undefined
+
+        // Try exact lookup first
+        const exact = monthMap[monthToken]
+        if (exact != null) return { day, month: exact, year }
+
+        // Try prefix matching: if the token uniquely matches the start of a month key,
+        // treat it as that month (e.g. 'sept' -> 'september'). If multiple months match
+        // the prefix, return the token for later prefix-based matching.
+        const matches = Object.entries(monthMap)
+          .filter(([k]) => k.startsWith(monthToken))
+          .map(([, v]) => v)
+
+        if (matches.length === 1) return { day, month: matches[0], year }
+        return { day, monthName: monthToken, year }
+      }
+
+      // Pattern month-only or month+year: "september", "sept2025", allow trailing dot
+      const monthOnlyMatch = s.match(/^([a-zäöü]{1,9})(\d{2}|\d{4})?\.?$/)
+      if (monthOnlyMatch) {
+        const monthToken = monthOnlyMatch[1]
+        const yearRaw = monthOnlyMatch[2]
+        let year: number | undefined
+        if (yearRaw) {
+          if (yearRaw.length === 2) year = 2000 + Number(yearRaw)
+          else if (yearRaw.length === 4) year = Number(yearRaw)
+        }
+
+        // Exact lookup first
+        const exact = monthMap[monthToken]
+        if (exact != null) return { month: exact, year }
+
+        // Prefix matching: if unique, return numeric month; otherwise keep token
+        const matches = Object.entries(monthMap)
+          .filter(([k]) => k.startsWith(monthToken))
+          .map(([, v]) => v)
+        if (matches.length === 1) return { month: matches[0], year }
+        return { monthName: monthToken, year }
       }
       return undefined
     }
