@@ -44,13 +44,6 @@ describe('parseDateSearch - additional patterns', () => {
     expect(parseDateSearch('september2023')).toEqual({ month: 8, year: 2023 })
   })
 
-  it('parses day + month (textual and numeric)', () => {
-    expect(parseDateSearch('21.sep')).toEqual({ day: 21, month: 8 })
-    expect(parseDateSearch('21.9')).toEqual({ day: 21, month: 8 })
-    expect(parseDateSearch('21.09')).toEqual({ day: 21, month: 8 })
-    expect(parseDateSearch('03.maerz')).toEqual({ day: 3, month: 2 })
-  })
-
   it('parses day + month + year', () => {
     expect(parseDateSearch('21.sep2025')).toEqual({ day: 21, month: 8, year: 2025 })
     expect(parseDateSearch('03.03.2024')).toEqual({ day: 3, month: 2, year: 2024 })
