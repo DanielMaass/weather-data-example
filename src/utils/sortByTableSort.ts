@@ -3,7 +3,7 @@ import { PrecipitationDataRow, TemperatureDataRow } from '../types';
 
 type DataRow = TemperatureDataRow | PrecipitationDataRow;
 
-export function sortByTableSort(data: DataRow[], sorting:SortingState): DataRow[] {
+export function sortByTableSort(data: DataRow[], sorting: SortingState): DataRow[] {
   if (!sorting.length) return data
 
   return data.toSorted((a: DataRow, b: DataRow) => {

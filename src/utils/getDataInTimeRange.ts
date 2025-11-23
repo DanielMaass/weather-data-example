@@ -1,7 +1,7 @@
 import { PrecipitationDataRow, TemperatureDataRow } from '../types'
 
 export function getDataInTimeRange(data: (TemperatureDataRow | PrecipitationDataRow)[], timeRange: '1M' | '6M' | '1J' | 'Max'): (TemperatureDataRow | PrecipitationDataRow)[] {
-  if(!data.length) return []
+  if (!data.length) return []
 
   const lastDate = data[data.length - 1].date
   let firstDate = data[0].date

@@ -112,7 +112,7 @@ export function HumidityChart()  {
       <CloudRainWind className='w-6 h-6 size-6' />
       <div className='flex flex-col items-start'>
         <span>{chartConfig.max.label}</span>
-        <span className='text-lg leading-4'>{max} mm</span>
+        <span className='text-lg leading-4'>{max} %</span>
       </div>
     </Button>
   </>

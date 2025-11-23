@@ -63,7 +63,7 @@ export function Search({ useContextHook, color }: SearchProps) {
             autoFocus
             placeholder='Suchen'
             className={cn(
-              'shrinkbg-background/20 backdrop-blur-xs focus:outline-none'
+              'shrink bg-background/20 backdrop-blur-xs focus:outline-none'
             )}
             onBlur={() => setIsActive(searchTerm.length > 0)}
           />

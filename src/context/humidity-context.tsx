@@ -32,7 +32,7 @@ export function HumidityProvider({ children }: { children: React.ReactNode }) {
   }, [tempData])
 
 
-  const value: PrecipitationContextValue = {
+  const value: HumidityContextValue = {
     data: tableSortData,
     timeRange,
     setTimeRange,

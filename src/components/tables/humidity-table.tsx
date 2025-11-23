@@ -11,7 +11,7 @@ import { ArrowDown, ArrowUp } from "lucide-react"
 import { RefObject, useEffect, useRef } from "react"
 import { useHumidity } from '../../context/humidity-context'
 import { cn } from "../../lib/utils"
-import { PrecipitationDataRow } from '../../types'
+import { HumidityDataRow } from '../../types'
 import { humidityColumns } from './humidity-columns'
 
 export const HumidityTable = () => {
@@ -98,7 +98,7 @@ function VirtualizedTableBody({
   table,
   scrollContainerRef,
 }: {
-  table: Table<PrecipitationDataRow>
+  table: Table<HumidityDataRow>
   scrollContainerRef: RefObject<HTMLDivElement | null>
 }) {
   const { rows } = table.getRowModel()
@@ -162,7 +162,7 @@ function VirtualizedTableBody({
       }}
     >
       {virtualItems.map((virtualRow) => {
-        const row = rows[virtualRow.index] as Row<PrecipitationDataRow>
+        const row = rows[virtualRow.index] as Row<HumidityDataRow>
         return <TableBodyRow key={row.id} row={row} virtualRow={virtualRow} rowVirtualizer={rowVirtualizer} />
       })}
     </div>
@@ -174,7 +174,7 @@ function TableBodyRow({
   virtualRow,
   rowVirtualizer,
 }: {
-  row: Row<PrecipitationDataRow>
+  row: Row<HumidityDataRow>
   virtualRow: VirtualItem
   rowVirtualizer: Virtualizer<HTMLDivElement, HTMLElement>
 }) {
