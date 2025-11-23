@@ -69,7 +69,7 @@ export const PrecipitationTable = () => {
                       className={cn(
                         "flex items-center gap-0.5 whitespace-nowrap font-normal",
                         header.column.getCanSort() && "cursor-pointer select-none",
-                        header.column.getIsSorted() && "text-temperature"
+                        header.column.getIsSorted() && "text-precipitation"
                       )}
                       onClick={header.column.getToggleSortingHandler()}
                       style={{ justifyContent: align === "right" ? "flex-end" : undefined }}

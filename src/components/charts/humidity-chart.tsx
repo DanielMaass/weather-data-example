@@ -90,7 +90,7 @@ export function HumidityChart()  {
           stroke="var(--foreground)"
           fill="#00000000"
           tickFormatter={formatShortDate}
-          className="[&>rect:first-of-type]:hidden [&>.recharts-surface]:overflow-visible [&>.recharts-brush-texts>text]:fill-precipitation overflow-visible"
+          className="[&>rect:first-of-type]:hidden [&>.recharts-surface]:overflow-visible [&>.recharts-brush-texts>text]:fill-humidity overflow-visible"
           >
           <ComposedChart>
             <ZAxis type="number" dataKey="max" range={[20, 20]} />
