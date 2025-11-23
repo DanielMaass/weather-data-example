@@ -11,7 +11,7 @@ const sampleWeatherData = [
   { STATIONS_ID: 1, MESS_DATUM: 20250210, TXK: 8,  TNK: 0 },   // 10 Feb 2025 (non-match)
   { STATIONS_ID: 1, MESS_DATUM: 20240303, TXK: 9,  TNK: 1 },   // 03 Mar 2024
   { STATIONS_ID: 1, MESS_DATUM: 20250303, TXK: 15, TNK: 4 },   // 03 Mar 2025
-] as any
+] as const
 
 // Mock react-query to feed provider
 vi.mock('@tanstack/react-query', () => ({
@@ -84,7 +84,7 @@ describe('Date search returns all matching day+month entries', () => {
     expect(dateTexts.some(t => /2024/.test(t))).toBe(true)
     expect(dateTexts.some(t => /2025/.test(t))).toBe(true)
     // Ensure January or February only not exclusive, but we ensure March days present
-    expect(dateTexts.every(t => /03\. Mär/.test(t!))).toBe(true)
+    expect(dateTexts.every(t => /03\. Mär/.test(t))).toBe(true)
   })
 
   it('searching textual month with umlaut ("3.Mär") and ae replacement ("3.maer") matches March 03 entries', async () => {

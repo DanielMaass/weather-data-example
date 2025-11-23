@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { SortingState } from '@tanstack/react-table'
+import type { SortingState } from '@tanstack/react-table'
 import { createContext, useContext, useMemo, useState } from 'react'
 import { magdeburgDataQuery } from '../lib/magdeburgData.query'
 import type { TemperatureContextValue, TimeRange } from '../types'

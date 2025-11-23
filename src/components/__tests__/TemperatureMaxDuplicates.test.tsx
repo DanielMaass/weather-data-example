@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { TemperatureProvider } from '../../context/temperature-context'
+import { TemperatureDataRow } from '../../types'
 import { TemperatureChart } from '../charts/temperature-chart'
 import { TemperatureTable } from '../tables/temperature-table'
 
@@ -10,17 +11,17 @@ const sampleWeatherData = [
   { STATIONS_ID: 1, MESS_DATUM: 20250101, TXK: 30, TNK: -2 },
   { STATIONS_ID: 1, MESS_DATUM: 20250102, TXK: 10, TNK: 0 },
   { STATIONS_ID: 1, MESS_DATUM: 20250103, TXK: 30, TNK: 1 },
-] as any
+] as const
 
 vi.mock('@tanstack/react-query', () => ({
   useQuery: () => ({ data: sampleWeatherData, isLoading: false, isError: false }),
 }))
 
-let lastChartData: any[] | undefined
+let lastChartData: TemperatureDataRow[] | undefined
 vi.mock('recharts', async () => {
-  const Stub = (props: any) => <div data-stub>{props.children}</div>
+  const Stub = (props: React.PropsWithChildren<HTMLDivElement>) => <div data-stub>{props.children}</div>
   return {
-    ComposedChart: (props: any) => {
+    ComposedChart: (props: React.PropsWithChildren<HTMLDivElement> & { data: TemperatureDataRow[] }) => {
       lastChartData = props.data
       return <div data-testid="chart">{props.children}</div>
     },
